@@ -1,26 +1,28 @@
 part of 'login_bloc.dart';
 
-sealed class LoginState extends Equatable {
-  const LoginState();
-
+abstract class LoginState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-final class LoginInitial extends LoginState {}
+class LoginInitial extends LoginState {}
 
-//add login in progress state
-final class LoginInProgress extends LoginState {}
+class LoginInProgress extends LoginState {}
 
-//add login success state
-final class LoginSuccess extends LoginState {}
-
-//add login failure state
-final class LoginFailure extends LoginState {
-  final String error;
-
-  const LoginFailure({required this.error});
+class LoginSuccess extends LoginState {
+  final String token;
+  
+  LoginSuccess({required this.token});
 
   @override
-  List<Object> get props => [error];
+  List<Object?> get props => [token];
+}
+
+class LoginFailure extends LoginState {
+  final String error;
+
+  LoginFailure({required this.error});
+
+  @override
+  List<Object?> get props => [error];
 }

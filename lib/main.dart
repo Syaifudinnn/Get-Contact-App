@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_contact_app/blocs/login/login_bloc.dart';
+import 'package:get_contact_app/core/network/dio_client.dart';
 import 'package:get_contact_app/screens/login/login_page.dart';
 import 'package:get_contact_app/screens/info/info_page.dart';
 import 'package:get_contact_app/screens/menu/menu_page.dart';
@@ -12,7 +13,7 @@ void main() {
     MultiBlocProvider(
       providers: [
         BlocProvider<LoginBloc>(
-          create: (context) => LoginBloc(),
+          create: (context) => LoginBloc(DioClient()),
         ),
       ],
       child: MyApp(),
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginBloc(),
+      create: (context) => LoginBloc(DioClient()),
       child: MaterialApp(
         title: 'Get Contact',
         debugShowCheckedModeBanner: false,

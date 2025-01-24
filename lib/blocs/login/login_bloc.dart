@@ -1,21 +1,41 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:get_contact_app/models/login_response.dart';
+import 'package:get_contact_app/core/network/dio_client.dart';
+import 'package:get_contact_app/core/config/api_config.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitial()) {
+  final DioClient _dioClient;
+
+  LoginBloc(this._dioClient) : super(LoginInitial()) {
     on<LoginButtonPressed>((event, emit) async {
-      // TODO: implement event handler
-      //create dummy login logic
-      //add 2 second delay
       emit(LoginInProgress());
-      await Future.delayed(const Duration(seconds: 2));
-      if (event.email == 'admin' && event.password == 'admin') {
-        emit(LoginSuccess());
-      } else {
-        emit(LoginFailure(error: 'Invalid email or password'));
+
+      try {
+        final response = await _dioClient.post(
+          ApiConfig.login, 
+          data: {
+            'email': event.email,
+            'password': event.password,
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final loginResponse = LoginResponse.fromJson(response.data);
+
+          if (loginResponse.data?.token != null) {
+            emit(LoginSuccess(token: loginResponse.data!.token!));
+          } else {
+            emit(LoginFailure(error: 'Token not found in response'));
+          }
+        } else {
+          emit(LoginFailure(error: 'Invalid email or password'));
+        }
+      } catch (e) {
+        emit(LoginFailure(error: 'Failed to login: ${e.toString()}'));
       }
     });
   }

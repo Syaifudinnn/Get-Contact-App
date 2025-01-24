@@ -3,7 +3,7 @@ class ApiConfig {
       'http://127.0.0.1:8000/api/'; // Replace with your API URL
 
   // API Endpoints
-  static const String products = '/contact';
+  static const String login = '/login';
 
   // API Timeouts
   static const int connectTimeout = 30000; // 30 seconds

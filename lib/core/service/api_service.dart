@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:get_contact_app/core/config/api_config.dart';
-import 'package:get_contact_app/core/network/dio_client.dart';
+import '../config/api_config.dart';
+import '../network/dio_client.dart';
 
 class ApiService {
   final DioClient _dioClient;
@@ -14,8 +14,8 @@ class ApiService {
     ProgressCallback? onReceiveProgress,
   }) async {
     try {
-      final response = await _dioClient.get(
-        ApiConfig.products,
+      final response = await _dioClient.post(
+        ApiConfig.login,
         queryParameters: queryParameters,
       );
       return response;
