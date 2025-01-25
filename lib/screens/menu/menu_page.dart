@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_contact_app/core/shared_preference/shared_preference.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -22,7 +23,8 @@ class _MenuPageState extends State<MenuPage> {
             Center(
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage('assets/images/get_contact_logo.jpg'),
+                backgroundImage:
+                    AssetImage('assets/images/get_contact_logo.jpg'),
               ),
             ),
             const SizedBox(height: 20),
@@ -114,11 +116,15 @@ class _MenuPageState extends State<MenuPage> {
             // Spacer to push the Logout button to the bottom
             const Spacer(),
 
-            // Logout
+            // Logout Button
             ElevatedButton(
               onPressed: () async {
-                // Logout logic
-                Navigator.pushReplacementNamed(context, '/login');
+                // Hapus token dari SharedPreferences
+                await TokenManager.deleteToken();
+
+                // Arahkan ke halaman login setelah logout
+                if (!mounted) return;
+                Navigator.pushReplacementNamed(context, '/');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0072ff),
@@ -136,7 +142,7 @@ class _MenuPageState extends State<MenuPage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -1,19 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:get_contact_app/core/network/exeption/api_exeption.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_contact_app/core/shared_preference/shared_preference.dart';
 
 class ApiInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-
+    // Retrieve token
+    final token = await TokenManager.getToken();
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }
 
-    return handler.next(options);
+    handler.next(options);
   }
 
   @override
