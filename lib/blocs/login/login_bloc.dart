@@ -16,7 +16,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       try {
         final response = await _dioClient.post(
-          ApiConfig.login, 
+          ApiConfig.login,
           data: {
             'email': event.email,
             'password': event.password,

@@ -3,18 +3,16 @@ class LoginResponse {
 
   LoginResponse({this.data});
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) {
-    return LoginResponse(
-      data: json['data'] != null ? Data.fromJson(json['data']) : null,
-    );
+  LoginResponse.fromJson(Map<String, dynamic> json) {
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = {};
-    if (data != null) {
-      json['data'] = data!.toJson();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
     }
-    return json;
+    return data;
   }
 }
 
@@ -25,19 +23,17 @@ class Data {
 
   Data({this.email, this.name, this.token});
 
-  factory Data.fromJson(Map<String, dynamic> json) {
-    return Data(
-      email: json['email'],
-      name: json['name'],
-      token: json['token'],
-    );
+  Data.fromJson(Map<String, dynamic> json) {
+    email = json['email'];
+    name = json['name'];
+    token = json['token'];
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'name': name,
-      'token': token,
-    };
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['email'] = this.email;
+    data['name'] = this.name;
+    data['token'] = this.token;
+    return data;
   }
 }

@@ -118,8 +118,8 @@ class LoginPageState extends State<LoginPage> {
         if (value == null || value.isEmpty) {
           return 'Please enter your email';
         }
-        final emailRegExp = RegExp(
-            r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
+        final emailRegExp =
+            RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
         if (!emailRegExp.hasMatch(value)) {
           return 'Please enter a valid email address';
         }
