@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_contact_app/blocs/contact/contact_bloc.dart';
 import 'package:get_contact_app/blocs/login/login_bloc.dart';
 import 'package:get_contact_app/core/network/dio_client.dart';
+import 'package:get_contact_app/repository/contact_repository.dart'; // Import statement added
+import 'package:get_contact_app/screens/contact/contact_page.dart';
 import 'package:get_contact_app/screens/login/login_page.dart';
 import 'package:get_contact_app/screens/info/info_page.dart';
 import 'package:get_contact_app/screens/menu/menu_page.dart';
@@ -15,6 +18,9 @@ void main() {
         BlocProvider<LoginBloc>(
           create: (context) => LoginBloc(DioClient()),
         ),
+        BlocProvider<ContactBloc>(
+            create: (context) =>
+                ContactBloc(contactRepository: ContactRepository())),
       ],
       child: MyApp(),
     ),
@@ -60,6 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static final List<Widget> _pages = <Widget>[
     InfoPage(),
+    ContactPage(),
     MenuPage(),
   ];
 
@@ -122,8 +129,12 @@ class _MyHomePageState extends State<MyHomePage> {
           unselectedItemColor: Colors.black,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.call),
+              icon: Icon(Icons.search),
               label: 'Info',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.call),
+              label: 'Contact',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.menu),

@@ -10,6 +10,9 @@ class ApiInterceptor extends Interceptor {
     final token = await TokenManager.getToken();
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
+      print('Token added to header: $token');
+    } else {
+      print('No token found');
     }
 
     handler.next(options);

@@ -4,10 +4,11 @@ class ApiConfig {
 
   // API Endpoints
   static const String login = '/login';
+  static const String contact = '/contacts';
 
   // API Timeouts
   static const int connectTimeout = 3000;
-  static const int receiveTimeout = 3000; 
+  static const int receiveTimeout = 3000;
 
   // API Headers
   static Map<String, String> get headers => {
