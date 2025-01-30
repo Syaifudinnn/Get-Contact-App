@@ -9,13 +9,12 @@ part 'contact_state.dart';
 class ContactBloc extends Bloc<ContactEvent, ContactState> {
   final ContactRepository contactRepository;
 
-  ContactBloc({required this.contactRepository})
-      : super(ContactLoading()) {
+  ContactBloc({required this.contactRepository}) : super(ContactLoading()) {
     on<ContactFetch>((event, emit) async {
       emit(ContactLoading());
       try {
         final contacts = await contactRepository.fetchContacts();
-        emit(ContactLoaded(contacts));
+        emit(ContactLoaded(contacts.data ?? []));
       } catch (e) {
         emit(ContactError(e.toString()));
       }

@@ -7,12 +7,10 @@ class ContactRepository {
 
   ContactRepository() : _apiService = ApiService();
 
-  Future<List<Contact>> fetchContacts() async {
+  Future<ContactResponse> fetchContacts() async {
     return _handleApiCall(() async {
       final response = await _apiService.getContacts();
-      return (response.data as List)
-          .map((json) => Contact.fromJson(json))
-          .toList();
+      return ContactResponse.fromJson(response.data);
     });
   }
 
