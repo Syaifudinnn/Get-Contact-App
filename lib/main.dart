@@ -4,7 +4,7 @@ import 'package:get_contact_app/blocs/contact/contact_bloc.dart';
 import 'package:get_contact_app/blocs/info/info_bloc.dart';
 import 'package:get_contact_app/blocs/login/login_bloc.dart';
 import 'package:get_contact_app/core/network/dio_client.dart';
-import 'package:get_contact_app/repository/contact_repository.dart'; // Import statement added
+import 'package:get_contact_app/repository/contact_repository.dart';
 import 'package:get_contact_app/screens/contact/contact_page.dart';
 import 'package:get_contact_app/screens/login/login_page.dart';
 import 'package:get_contact_app/screens/info/info_page.dart';
