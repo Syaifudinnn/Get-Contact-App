@@ -28,13 +28,6 @@ class _ContactPageState extends State<ContactPage> {
         child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.grey[100]!, Colors.grey[200]!],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
         child: BlocBuilder<ContactBloc, ContactState>(
           builder: (context, state) {
             if (state is ContactLoading) {

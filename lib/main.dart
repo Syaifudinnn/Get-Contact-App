@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_contact_app/blocs/contact/contact_bloc.dart';
+import 'package:get_contact_app/blocs/info/info_bloc.dart';
 import 'package:get_contact_app/blocs/login/login_bloc.dart';
 import 'package:get_contact_app/core/network/dio_client.dart';
 import 'package:get_contact_app/repository/contact_repository.dart'; // Import statement added
@@ -21,6 +22,9 @@ void main() {
         BlocProvider<ContactBloc>(
             create: (context) =>
                 ContactBloc(contactRepository: ContactRepository())),
+        BlocProvider<InfoBloc>(
+          create: (context) => InfoBloc(contactRepository: ContactRepository()),
+        ),
       ],
       child: MyApp(),
     ),
@@ -82,10 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(65), //ukuran AppBar
         child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-            bottomRight: Radius.circular(10),
-          ),
           child: AppBar(
             backgroundColor: const Color(0xFF0072ff),
             elevation: 5,

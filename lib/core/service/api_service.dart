@@ -7,6 +7,7 @@ class ApiService {
 
   ApiService() : _dioClient = DioClient();
 
+  //get contacts
   Future<Response> getContacts() async {
     try {
       final response = await _dioClient.get(ApiConfig.contact);
@@ -15,6 +16,19 @@ class ApiService {
       rethrow;
     } catch (e) {
       throw Exception('Unknown error occurred');
+    }
+  }
+
+  //search contacts
+  Future<Response> searchContacts(String query) async {
+    try {
+      final response = await _dioClient.get(
+        ApiConfig.contactSearch,
+        queryParameters: {'query': query},
+      );
+      return response;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Gagal mencari kontak');
     }
   }
 }
