@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_contact_app/blocs/contact/contact_bloc.dart';
 import 'package:get_contact_app/blocs/info/info_bloc.dart';
 import 'package:get_contact_app/blocs/login/login_bloc.dart';
+import 'package:get_contact_app/blocs/user/user_bloc.dart';
 import 'package:get_contact_app/core/network/dio_client.dart';
 import 'package:get_contact_app/repository/contact_repository.dart';
+import 'package:get_contact_app/repository/user_repository.dart';
 import 'package:get_contact_app/screens/contact/contact_page.dart';
 import 'package:get_contact_app/screens/login/login_page.dart';
 import 'package:get_contact_app/screens/info/info_page.dart';
@@ -24,6 +26,9 @@ void main() {
                 ContactBloc(contactRepository: ContactRepository())),
         BlocProvider<InfoBloc>(
           create: (context) => InfoBloc(contactRepository: ContactRepository()),
+        ),
+        BlocProvider<UserBloc>(
+          create: (context) => UserBloc(userRepository: UserRepository()),
         ),
       ],
       child: MyApp(),

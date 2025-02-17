@@ -6,6 +6,7 @@ class ApiConfig {
   static const String login = '/login';
   static const String contact = '/contacts';
   static const String contactSearch = '/searchContacts';
+  static const String user = '/user';
 
   // API Timeouts
   static const int connectTimeout = 3000;
