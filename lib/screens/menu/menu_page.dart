@@ -18,30 +18,41 @@ class _MenuPageState extends State<MenuPage> {
     context.read<UserBloc>().add(FetchUserProfile());
   }
 
-  void _updateSpamProtection(bool isEnabled) async {
+  void _updateVisibility(String userId, String visibility) async {
     try {
-      await ApiService().updateSpamProtection(isEnabled);
+      await ApiService().updateUserVisibility(userId, visibility);
+      if (!mounted) return;
+
+      // Refresh user data after successful update
+      context.read<UserBloc>().add(FetchUserProfile());
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Spam Protection updated')),
+        SnackBar(content: Text('Visibility updated to $visibility')),
       );
-      context.read<UserBloc>().add(FetchUserProfile()); // Perbarui UI setelah edit
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update Spam Protection')),
+        SnackBar(content: Text('Failed to update visibility: ${e.toString()}')),
       );
     }
   }
 
-  void _updateVisibility(String visibility) async {
+  void _updateSpamProtection(String userId, bool isEnabled) async {
     try {
-      await ApiService().updateUserVisibility(visibility);
+      await ApiService().updateSpamProtection(userId, isEnabled);
+      if (!mounted) return;
+
+      // Refresh user data after successful update
+      context.read<UserBloc>().add(FetchUserProfile());
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Visibility updated to $visibility')),
+        const SnackBar(content: Text('Spam Protection updated')),
       );
-      context.read<UserBloc>().add(FetchUserProfile()); // Perbarui UI setelah edit
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update visibility')),
+        SnackBar(
+            content: Text('Failed to update spam protection: ${e.toString()}')),
       );
     }
   }
@@ -126,7 +137,9 @@ class _MenuPageState extends State<MenuPage> {
                     ),
                     value: user.settings?.spamProtectionEnabled ?? false,
                     onChanged: (value) {
-                      _updateSpamProtection(value);
+                      if (user.id != null) {
+                        _updateSpamProtection(user.id.toString(), value);
+                      }
                     },
                   ),
 
@@ -154,8 +167,8 @@ class _MenuPageState extends State<MenuPage> {
                         );
                       }).toList(),
                       onChanged: (newValue) {
-                        if (newValue != null) {
-                          _updateVisibility(newValue);
+                        if (newValue != null && user.id != null) {
+                          _updateVisibility(user.id.toString(), newValue);
                         }
                       },
                     ),

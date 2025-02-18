@@ -46,27 +46,41 @@ class ApiService {
     }
   }
 
-  //update user visibility
-  Future<void> updateUserVisibility(String visibility) async {
+  //update User Visibility
+  Future<void> updateUserVisibility(String userId, String visibility) async {
     try {
-      await _dioClient.put(
-        ApiConfig.users,
-        data: {"tag_visibility": visibility},
+      final response = await _dioClient.put(
+        ApiConfig.visibility, // Remove userId from URL
+        data: {"user_id": userId, "tag_visibility": visibility},
       );
+
+      if (response.statusCode != 200) {
+        throw Exception(
+            'Failed to update visibility: ${response.statusMessage}');
+      }
     } on DioException catch (e) {
+      print("ERROR: ${e.response?.statusCode} - ${e.message}");
+      print("RESPONSE DATA: ${e.response?.data}");
       throw Exception(
           e.response?.data['message'] ?? 'Failed to update visibility');
     }
   }
 
-  //update spam protection
-  Future<void> updateSpamProtection(bool isEnabled) async {
+  //update Spam Protection
+  Future<void> updateSpamProtection(String userId, bool isEnabled) async {
     try {
-      await _dioClient.put(
-        ApiConfig.users,
-        data: {"spam_protection_enabled": isEnabled},
+      final response = await _dioClient.put(
+        ApiConfig.spamProtect, // Remove userId from URL
+        data: {"user_id": userId, "spam_protection_enabled": isEnabled},
       );
+
+      if (response.statusCode != 200) {
+        throw Exception(
+            'Failed to update spam protection: ${response.statusMessage}');
+      }
     } on DioException catch (e) {
+      print("ERROR: ${e.response?.statusCode} - ${e.message}");
+      print("RESPONSE DATA: ${e.response?.data}");
       throw Exception(
           e.response?.data['message'] ?? 'Failed to update spam protection');
     }

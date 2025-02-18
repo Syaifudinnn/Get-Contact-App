@@ -14,6 +14,18 @@ class UserRepository {
     });
   }
 
+  Future<void> updateVisibility(String userId, String visibility) async {
+    return _handleApiCall(() async {
+      await _apiService.updateUserVisibility(userId, visibility);
+    });
+  }
+
+  Future<void> updateSpamProtection(String userId, bool isEnabled) async {
+    return _handleApiCall(() async {
+      await _apiService.updateSpamProtection(userId, isEnabled);
+    });
+  }
+
   Future<T> _handleApiCall<T>(Future<T> Function() apiCall) async {
     try {
       return await apiCall();
