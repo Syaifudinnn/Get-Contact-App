@@ -50,12 +50,25 @@ class ApiService {
   Future<void> updateUserVisibility(String visibility) async {
     try {
       await _dioClient.put(
-        ApiConfig.user,
+        ApiConfig.users,
         data: {"tag_visibility": visibility},
       );
     } on DioException catch (e) {
       throw Exception(
           e.response?.data['message'] ?? 'Failed to update visibility');
+    }
+  }
+
+  //update spam protection
+  Future<void> updateSpamProtection(bool isEnabled) async {
+    try {
+      await _dioClient.put(
+        ApiConfig.users,
+        data: {"spam_protection_enabled": isEnabled},
+      );
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Failed to update spam protection');
     }
   }
 }

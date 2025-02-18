@@ -18,15 +18,27 @@ class _MenuPageState extends State<MenuPage> {
     context.read<UserBloc>().add(FetchUserProfile());
   }
 
-  bool _isSpamProtectionEnabled = false;
-  bool _isVisibilityEnabled = false;
+  void _updateSpamProtection(bool isEnabled) async {
+    try {
+      await ApiService().updateSpamProtection(isEnabled);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Spam Protection updated')),
+      );
+      context.read<UserBloc>().add(FetchUserProfile()); // Perbarui UI setelah edit
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update Spam Protection')),
+      );
+    }
+  }
 
   void _updateVisibility(String visibility) async {
     try {
-      await ApiService().updateUserVisibility(visibility); // Panggil API
+      await ApiService().updateUserVisibility(visibility);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Visibility updated to $visibility')),
       );
+      context.read<UserBloc>().add(FetchUserProfile()); // Perbarui UI setelah edit
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update visibility')),
@@ -48,7 +60,7 @@ class _MenuPageState extends State<MenuPage> {
 
               return Column(
                 children: [
-                  // Foto Profil di Tengah
+                  // Foto Profil
                   Center(
                     child: CircleAvatar(
                       radius: 60,
@@ -114,9 +126,7 @@ class _MenuPageState extends State<MenuPage> {
                     ),
                     value: user.settings?.spamProtectionEnabled ?? false,
                     onChanged: (value) {
-                      setState(() {
-                        _isSpamProtectionEnabled = value;
-                      });
+                      _updateSpamProtection(value);
                     },
                   ),
 
@@ -130,13 +140,12 @@ class _MenuPageState extends State<MenuPage> {
                       ],
                     ),
                     trailing: DropdownButton<String>(
-                      value: user.settings?.tagVisibility, // Nilai saat ini
+                      value: user.settings?.tagVisibility ?? 'public',
                       items: ['public', 'private'].map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(
-                            value
-                                .toUpperCase(), // Menampilkan dalam huruf besar
+                            value.toUpperCase(),
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -146,12 +155,6 @@ class _MenuPageState extends State<MenuPage> {
                       }).toList(),
                       onChanged: (newValue) {
                         if (newValue != null) {
-                          setState(() {
-                            // Simpan nilai baru ke dalam state
-                            user.settings?.tagVisibility = newValue;
-                          });
-
-                          // Panggil fungsi untuk update di backend
                           _updateVisibility(newValue);
                         }
                       },
