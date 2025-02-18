@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_contact_app/blocs/info/info_bloc.dart';
+import 'package:get_contact_app/core/service/search_history_service.dart';
 import 'package:get_contact_app/models/search_response.dart';
+import 'package:get_contact_app/widgets/search_form.dart';
+import 'package:get_contact_app/widgets/search_history_list.dart';
 
 class InfoPage extends StatefulWidget {
   const InfoPage({super.key});
@@ -13,6 +16,43 @@ class InfoPage extends StatefulWidget {
 class InfoPageState extends State<InfoPage> {
   final TextEditingController _searchController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final SearchHistoryService _searchHistoryService = SearchHistoryService();
+  List<String> searchHistory = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSearchHistory();
+  }
+
+  Future<void> _loadSearchHistory() async {
+    final history = await _searchHistoryService.getSearchHistory();
+    print('Loading history: $history'); // Debug print
+    setState(() {
+      searchHistory = history;
+    });
+  }
+
+  Future<void> _performSearch(String query) async {
+    if (_formKey.currentState!.validate()) {
+      await _searchHistoryService.addSearch(query);
+      await _loadSearchHistory();
+      context.read<InfoBloc>().add(SearchContact(query));
+      print('Current history after search: $searchHistory'); // Debug print
+    }
+  }
+
+  Future<void> _removeSearchItem(String query) async {
+    await _searchHistoryService.removeSearch(query);
+    await _loadSearchHistory();
+    print('History after removal: $searchHistory'); // Debug print
+  }
+
+  Future<void> _clearHistory() async {
+    await _searchHistoryService.clearHistory();
+    await _loadSearchHistory();
+    print('History after clearing: $searchHistory'); // Debug print
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,57 +61,19 @@ class InfoPageState extends State<InfoPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Form(
-              key: _formKey,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Cari kontak...',
-                        prefixIcon: const Icon(Icons.search),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 10.0),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Masukkan kata kunci pencarian';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        context
-                            .read<InfoBloc>()
-                            .add(SearchContact(_searchController.text));
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 20),
-                    ),
-                    child: const Text(
-                      'Cari',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
+            SearchForm(
+              controller: _searchController,
+              formKey: _formKey,
+              onSearch: () => _performSearch(_searchController.text),
+            ),
+            SearchHistoryList(
+              searchHistory: searchHistory,
+              onSearchSelected: (query) {
+                _searchController.text = query;
+                _performSearch(query);
+              },
+              onSearchRemoved: _removeSearchItem,
+              onClearHistory: _clearHistory,
             ),
             const SizedBox(height: 20),
             Expanded(
